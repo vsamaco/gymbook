@@ -15,6 +15,8 @@ class ActivityRepository():
     def get_dataframe(self):
         if not self.workout_json:
             self.workout_json = self._get_db_workouts()
+        if not self.workout_json:
+            return pd.DataFrame()
 
         df = pd.DataFrame(self.workout_json)
 

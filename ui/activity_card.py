@@ -5,8 +5,8 @@ from processors.activity_processor import ActivityProcessor
 
 
 class ActivityCard():
-    def __init__(self, strength_type, df_workouts):
-        self.strength_type = strength_type
+    def __init__(self, exercise, df_workouts):
+        self.exercise = exercise
         self.activity_processor = ActivityProcessor(df_workouts)
 
     def get_max_set_total_activity(self):
@@ -37,7 +37,7 @@ class ActivityCard():
     def render(self):
         df_workouts = self.activity_processor.get_dataframe()
         with st.container(border=True):
-            st.subheader(f'{self.strength_type.title()}', divider=True)
+            st.subheader(f'{self.exercise.title()}', divider=True)
 
             max_total_activity = self.get_max_set_total_activity()
             last_activities = self.get_last_activities(1)
