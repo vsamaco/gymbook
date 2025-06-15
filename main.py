@@ -1,36 +1,32 @@
-import os
 import streamlit as st
-from dotenv import load_dotenv
-
+from st_supabase_connection import SupabaseConnection
 from processors.activity_processor import ActivityProcessor
 from repository.activity_repository import ActivityRepository
 from ui.activity_card import ActivityCard
 
-load_dotenv()
-WORKOUT_URL = os.environ.get('WORKOUT_URL', '')
-
 
 def init():
-    activity_repository = ActivityRepository(WORKOUT_URL)
+    conn = st.connection("supabase", type=SupabaseConnection, ttl=None)
+    activity_repository = ActivityRepository(conn)
     df_workouts = activity_repository.get_dataframe()
     activity_processor = ActivityProcessor(df_workouts)
-    strength_types: list[str] = activity_processor.get_strength_types()
+    exercises: list[str] = activity_processor.get_exercises()
 
-    return (df_workouts, strength_types)
+    return (df_workouts, exercises)
 
 
 def main():
-    df_workouts, strength_types = init()
+    df_workouts, exercises = init()
     st.title('Gymbook')
 
-    select_strength_type = st.selectbox(
-        'Filter Exercise:', strength_types, None)
+    select_exercise_type = st.selectbox(
+        'Filter Exercise:', exercises, None)
 
-    for strength in strength_types:
-        if select_strength_type is None or (select_strength_type and select_strength_type == strength):
+    for exercise in exercises:
+        if select_exercise_type is None or (select_exercise_type and select_exercise_type == exercise):
             df_strength_workouts = ActivityProcessor(
-                df_workouts).filter_by_strength_type(strength).get_dataframe()
-            ActivityCard(strength, df_strength_workouts).render()
+                df_workouts).filter_by_exercise(exercise).get_dataframe()
+            ActivityCard(exercise, df_strength_workouts).render()
 
 
 main()

@@ -1,25 +1,27 @@
 import pandas as pd
-import requests
+from st_supabase_connection import SupabaseConnection, execute_query
 
 
 class ActivityRepository():
-    def __init__(self, workout_url):
-        # self.workout_json = workout_json
-        self.workout_url = workout_url
+    def __init__(self, conn: SupabaseConnection):
+        self.db = conn
         self.workout_json = None
 
-    def _get_workout_data(self):
-        response = requests.get(self.workout_url, timeout=1000)
-        response.raise_for_status()
-        return response.json()
+    def _get_db_workouts(self):
+        response = execute_query(self.db.table(
+            "activities").select("*"), ttl=0)
+        return response.data
 
     def get_dataframe(self):
         if not self.workout_json:
-            self.workout_json = self._get_workout_data()
+            self.workout_json = self._get_db_workouts()
+        if not self.workout_json:
+            return pd.DataFrame()
 
         df = pd.DataFrame(self.workout_json)
+
         df['date'] = pd.to_datetime(df['date'])
-        df['strength'] = df['strength'].replace('', pd.NA)
+        df['exercise'] = df['exercise'].replace('', pd.NA)
         df['max_set'] = df['sets'].apply(
             lambda x: max(x, key=lambda row: float(row['total'])) if x else None)
         df['max_set_total'] = df['max_set'].apply(
