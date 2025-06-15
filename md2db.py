@@ -1,20 +1,14 @@
-import os
-import json
 import re
 import datetime as dt
+import streamlit as st
 from dateutil.relativedelta import relativedelta
-from supabase import create_client, Client
-from dotenv import load_dotenv
-
-load_dotenv()
-WORKOUT_URL = os.environ.get('WORKOUT_URL', '')
-SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
-SUPABASE_KEY = os.environ.get('SUPABASE_KEY', '')
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+from st_supabase_connection import SupabaseConnection, execute_query
 
 
 WORKOUTS_MD_PATH = 'workout_data/workouts.md'
 WORKOUTS_JSON_PATH = 'workout_data/workouts.json'
+
+conn = st.connection("supabase", type=SupabaseConnection, ttl=None)
 
 with open(WORKOUTS_MD_PATH) as file:
     md_text = [line for line in file.readlines()]
@@ -141,7 +135,7 @@ def add_activity(data):
         'sets': data['sets'],
     }
     print(f'add: {activity['date']}')
-    supabase.table('activities').insert(activity).execute()
+    execute_query(conn.table("activities").insert(activity), ttl=0)
 
 
 for workout in workouts:
