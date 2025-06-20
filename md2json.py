@@ -92,7 +92,7 @@ for index, workout in enumerate(workouts):
     if strength:
         sets = parse_sets(workout['description'][1:])
         if (sets):
-            workouts[index]['strength'] = strength
+            workouts[index]['strength'] = strength.replace(' ', '_')
             workouts[index]['strength_description'] = strength_line.strip()
             workouts[index]['sets'] = sets
 
