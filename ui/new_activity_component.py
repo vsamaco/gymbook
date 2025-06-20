@@ -15,7 +15,7 @@ class NewActivityComponent():
             form = st.form('create_activity', clear_on_submit=False)
             start_date = form.date_input('Date')
             exercise = form.selectbox(
-                'Select exercise:', options=list(ExerciseEnum), format_func=lambda e: e.value)
+                'Exercise', options=list(ExerciseEnum), format_func=lambda e: e.value)
             description = form.text_input('Description')
             sets_data = form.text_area('Sets', placeholder="10: 45/10/15")
 
