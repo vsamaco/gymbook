@@ -80,8 +80,9 @@ class ActivityCard():
                 if selected_row['selection']['rows']:
                     selected_indices = selected_row['selection']['rows']
                     selected_data = df_workouts.iloc[selected_indices]
-                    UpdateActivityComponent(
-                        selected_data.iloc[0], self.activity_repository).render()
+                    if not selected_data.empty:
+                        UpdateActivityComponent(
+                            selected_data.iloc[0], self.activity_repository).render()
 
             with st.expander('Chart'):
                 self.render_chart()

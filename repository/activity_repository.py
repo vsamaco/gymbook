@@ -29,7 +29,7 @@ class ActivityRepository():
             lambda x: x['total'] if isinstance(x, dict) and 'total' in x else None)
         df['max_set_reps'] = df['max_set'].apply(
             lambda x: x['repetitions'] if isinstance(x, dict) and 'total' in x else None)
-        df.sort_values('date', inplace=True)
+        df.sort_values('date', inplace=True, ascending=False)
         return df
 
     def create(self, start_date: dt.datetime, exercise: str, description: str, sets: str):
