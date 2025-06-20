@@ -31,6 +31,5 @@ class LoginComponent():
                 if st.form_submit_button('Login'):
                     user = self.login(email, password)
                     if user:
-                        # st.session_state.user = user
                         st.success(f'welcome {user.user.email}')
                         st.rerun()
