@@ -23,11 +23,11 @@ class UpdateActivityComponent():
         with st.container(border=False):
             st.subheader(f'Activity: {self.activity.id}')
             form = st.form(
-                f'update_workout_{self.activity.id}', clear_on_submit=False)
+                f'update_workout_{self.activity.id}', clear_on_submit=False, enter_to_submit=False)
             start_date = form.date_input('Date', self.activity['date'])
             exercise = form.selectbox(
                 'Exercise', options=list(ExerciseEnum), format_func=lambda e: e.value, index=list(ExerciseEnum).index(self.activity.exercise))
-            description = form.text_input(
+            description = form.text_area(
                 'Description', value=self.activity['description'])
             sets_data = form.text_area(
                 'Sets', placeholder="10: 45/10/15", value=self.parse_sets(self.activity.sets))
