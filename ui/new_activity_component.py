@@ -12,11 +12,12 @@ class NewActivityComponent():
     @st.dialog('Create Activity')
     def render(self):
         with st.container(border=False):
-            form = st.form('create_activity', clear_on_submit=False)
+            form = st.form('create_activity',
+                           clear_on_submit=False, enter_to_submit=False)
             start_date = form.date_input('Date')
             exercise = form.selectbox(
                 'Exercise', options=list(ExerciseEnum), format_func=lambda e: e.value)
-            description = form.text_input('Description')
+            description = form.text_area('Description')
             sets_data = form.text_area('Sets', placeholder="10: 45/10/15")
 
             if form.form_submit_button('Submit'):
