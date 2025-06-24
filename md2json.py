@@ -1,12 +1,32 @@
 import json
 import re
+import toml
+import streamlit as st
+from st_supabase_connection import SupabaseConnection
+
+with open('workout_data/config.toml', 'r') as f:
+    config = toml.load(f)
+USERNAME = config['IMPORT_USERNAME']
+PASSWORD = config['IMPORT_PASSWORD']
+
+conn = st.connection(
+    "supabase", type=SupabaseConnection, ttl=None)
+conn.auth.sign_in_with_password(
+    credentials={'email': USERNAME, 'password': PASSWORD})
+user = conn.auth.get_user()
+if not user:
+    raise Exception('User not found')
+    exit()
+USER_ID = user.user.id
 
 WORKOUTS_MD_PATH = 'workout_data/workouts.md'
 WORKOUTS_JSON_PATH = 'workout_data/workouts.json'
 
+
 with open(WORKOUTS_MD_PATH) as file:
     md_text = [line for line in file.readlines()]
 print(len(md_text), md_text[1])
+
 
 workouts = []
 heading_regex = r'^\*+(\d+)\/(\d+)(.*)\*\*'
@@ -31,6 +51,7 @@ for line in md_text[1:]:
             'strength': '',
             'strength_description': '',
             'sets': [],
+            'user_id': USER_ID,
         })
     else:
         workout = workouts[-1]

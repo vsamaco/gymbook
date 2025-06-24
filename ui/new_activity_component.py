@@ -6,8 +6,9 @@ from repository.activity_repository import ActivityRepository
 
 
 class NewActivityComponent():
-    def __init__(self, activity_repo: ActivityRepository):
+    def __init__(self, user, activity_repo: ActivityRepository):
         self.activity_repository = activity_repo
+        self.user = user
 
     @st.dialog('Create Activity')
     def render(self):
@@ -29,6 +30,7 @@ class NewActivityComponent():
                         sets=sets_data,
                     )
                     result = self.activity_repository.create(
+                        user_id=self.user.id,
                         start_date=new_activity.start_date,
                         exercise=new_activity.exercise.value,
                         description=new_activity.description,
@@ -42,3 +44,6 @@ class NewActivityComponent():
                     print(err.errors())
                     for e in err.errors():
                         st.error(e)
+                except Exception as e:
+                    print('update error', e)
+                    st.error(e)

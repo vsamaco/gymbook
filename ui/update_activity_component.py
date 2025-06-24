@@ -7,9 +7,10 @@ from repository.activity_repository import ActivityRepository
 
 
 class UpdateActivityComponent():
-    def __init__(self, activity, activity_repository: ActivityRepository):
+    def __init__(self, activity, user, activity_repository: ActivityRepository):
         self.activity = activity
         self.activity_repository = activity_repository
+        self.user = user
 
     def parse_sets(self, sets_data):
         result = ''
@@ -42,12 +43,15 @@ class UpdateActivityComponent():
                         sets=sets_data,
                     )
 
-                    result = self.activity_repository.update(self.activity['id'], {
-                        'start_date': updated_activity.start_date,
-                        'exercise': updated_activity.exercise.value,
-                        'description': updated_activity.description,
-                        'sets': updated_activity.sets
-                    })
+                    result = self.activity_repository.update(
+                        self.activity['id'],
+                        {
+                            'start_date': updated_activity.start_date,
+                            'exercise': updated_activity.exercise.value,
+                            'description': updated_activity.description,
+                            'sets': updated_activity.sets
+                        },
+                        self.user.id)
 
                     st.success('Update success')
                     st.rerun()
@@ -55,11 +59,14 @@ class UpdateActivityComponent():
                     print('update error', err.errors())
                     for e in err.errors():
                         st.error(e)
+                except Exception as e:
+                    print('update error', e)
+                    st.error(e)
 
             if btn_col2.form_submit_button('Delete', type='secondary'):
                 try:
                     result = self.activity_repository.destroy(
-                        self.activity['id'])
+                        self.activity['id'], self.user.id)
                     st.success('Delete success')
                     st.rerun()
                 except Exception as e:

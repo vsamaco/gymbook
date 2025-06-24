@@ -13,21 +13,23 @@ def init():
         "supabase", type=SupabaseConnection, ttl=None)
 
     activity_repository = ActivityRepository(conn)
-    df_workouts = activity_repository.get_dataframe()
-
-    return (conn, activity_repository, df_workouts)
+    return (conn, activity_repository)
 
 
 def main():
-    conn, activity_repository, df_workouts = init()
-    st.title('Gymbook')
+    conn, activity_repository = init()
+    user = conn.auth.get_user()
 
-    LoginComponent(conn).render()
-    if not conn.auth.get_user():
+    if not user:
+        LoginComponent(conn).render()
         st.stop()
 
+    user = user.user
+    df_workouts = activity_repository.get_dataframe(user.id)
+    st.title('Gymbook')
+
     if st.button('Create Activity'):
-        NewActivityComponent(activity_repository).render()
+        NewActivityComponent(user, activity_repository).render()
 
     select_exercise_type = st.selectbox(
         'Filter Exercise:', options=[None] + list(ExerciseEnum), format_func=lambda e: e.value if e else '', placeholder="Select exercise")
@@ -37,7 +39,7 @@ def main():
             df_strength_workouts = ActivityProcessor(
                 df_workouts).filter_by_exercise(exercise_enum.value).get_dataframe()
             ActivityCard(exercise_enum.value, df_strength_workouts,
-                         activity_repository).render()
+                         activity_repository, user).render()
 
 
 main()

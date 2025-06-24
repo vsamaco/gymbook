@@ -1,14 +1,26 @@
 import re
 import datetime as dt
 import streamlit as st
-from dateutil.relativedelta import relativedelta
 from st_supabase_connection import SupabaseConnection, execute_query
+import toml
 
+with open('workout_data/config.toml', 'r') as f:
+    config = toml.load(f)
+USERNAME = config['IMPORT_USERNAME']
+PASSWORD = config['IMPORT_PASSWORD']
+
+conn = st.connection(
+    "supabase", type=SupabaseConnection, ttl=None)
+conn.auth.sign_in_with_password(
+    credentials={'email': USERNAME, 'password': PASSWORD})
+user = conn.auth.get_user()
+if not user:
+    raise Exception('User not found')
+    exit()
+USER_ID = user.user.id
 
 WORKOUTS_MD_PATH = 'workout_data/workouts.md'
 WORKOUTS_JSON_PATH = 'workout_data/workouts.json'
-
-conn = st.connection("supabase", type=SupabaseConnection, ttl=None)
 
 with open(WORKOUTS_MD_PATH) as file:
     md_text = [line for line in file.readlines()]
@@ -39,6 +51,7 @@ for line in md_text[1:]:
             'description_raw': [],
             'description': '',
             'sets': [],
+            'user_id': USER_ID,
         })
     else:
         workout = workouts[-1]
@@ -133,6 +146,7 @@ def add_activity(data):
         'date': data['date'].isoformat(),
         'description': data['description'],
         'sets': data['sets'],
+        'user_id': data['user_id']
     }
     print(f'add: {activity['date']}')
     execute_query(conn.table("activities").insert(activity), ttl=0)
