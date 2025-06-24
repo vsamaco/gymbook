@@ -168,4 +168,7 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
 secrets.toml
-workout_data/
+workout_data/config.toml
+workout_data/workouts.json
+workout_data/workouts.md
+supabase/seed.sql
