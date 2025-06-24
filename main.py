@@ -20,8 +20,8 @@ def main():
     conn, activity_repository = init()
     user = conn.auth.get_user()
 
+    LoginComponent(conn).render()
     if not user:
-        LoginComponent(conn).render()
         st.stop()
 
     user = user.user
