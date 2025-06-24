@@ -9,14 +9,17 @@ class ActivityRepository():
         self.db = conn
         self.workout_json = None
 
-    def _get_db_workouts(self):
-        response = execute_query(self.db.table(
-            "activities").select("*"), ttl=0)
+    def _get_db_workouts(self, user_id=None):
+        query = self.db.table(
+            "activities").select("*")
+        if user_id:
+            query = query.eq('user_id', user_id)
+        response = execute_query(query, ttl=0)
         return response.data
 
-    def get_dataframe(self):
+    def get_dataframe(self, user_id=None):
         if not self.workout_json:
-            self.workout_json = self._get_db_workouts()
+            self.workout_json = self._get_db_workouts(user_id)
         if not self.workout_json:
             return pd.DataFrame()
 
@@ -32,17 +35,21 @@ class ActivityRepository():
         df.sort_values('date', inplace=True, ascending=False)
         return df
 
-    def create(self, start_date: dt.datetime, exercise: str, description: str, sets: str):
+    def create(self, user_id, start_date: dt.datetime, exercise: str, description: str, sets: str):
         data = {
+            "user_id": user_id,
             "date": start_date.isoformat(),
             "exercise": exercise,
             "description": description,
             "sets": self._parse_activity_sets(sets),
         }
-        response = execute_query(self.db.table("activities").insert(data))
-        return response
+        response = execute_query(self.db.table(
+            "activities").insert(data), ttl=0)
+        if not len(response.data):
+            raise Exception('Create activity error')
+        return response.data[0]
 
-    def update(self, activity_id, updated_data: dict):
+    def update(self, activity_id, updated_data: dict, user_id):
         data = {
             "date": updated_data['start_date'].isoformat(),
             "exercise": updated_data['exercise'],
@@ -50,13 +57,17 @@ class ActivityRepository():
             "sets": self._parse_activity_sets(updated_data['sets']),
         }
         response = execute_query(self.db.table(
-            'activities').update(data).eq("id", activity_id))
-        return response
+            'activities').update(data).eq("id", activity_id).eq("user_id", user_id), ttl=0)
+        if not len(response.data):
+            raise Exception('Update activity error')
+        return response.data[0]
 
-    def destroy(self, activity_id):
+    def destroy(self, activity_id, user_id):
         response = execute_query(self.db.table(
-            'activities').delete().eq('id', activity_id))
-        return response
+            'activities').delete().eq('id', activity_id).eq('user_id', user_id), ttl=0)
+        if not len(response.data):
+            raise Exception('Destroy activity error')
+        return response.data[0]
 
     def _parse_activity_sets(self, sets_data: str):
         result = []

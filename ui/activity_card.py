@@ -6,10 +6,11 @@ from ui.update_activity_component import UpdateActivityComponent
 
 
 class ActivityCard():
-    def __init__(self, exercise, df_workouts, activity_repository):
+    def __init__(self, exercise, df_workouts, activity_repository, user):
         self.exercise = exercise
         self.activity_processor = ActivityProcessor(df_workouts)
         self.activity_repository = activity_repository
+        self.user = user
 
     def get_max_set_total_activity(self):
         df_workouts = self.activity_processor.get_dataframe()
@@ -98,7 +99,7 @@ class ActivityCard():
                     selected_data = df_workouts.iloc[selected_indices]
                     if not selected_data.empty:
                         UpdateActivityComponent(
-                            selected_data.iloc[0], self.activity_repository).render()
+                            selected_data.iloc[0], self.user, self.activity_repository).render()
 
             with st.expander('Chart'):
                 self.render_chart()
