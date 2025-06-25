@@ -33,7 +33,7 @@ class UpdateActivityComponent():
             sets_data = form.text_area(
                 'Sets', placeholder="10: 45/10/15", value=self.parse_sets(self.activity.sets))
 
-            btn_col1, btn_col2 = form.columns([0.5, 0.5])
+            btn_col1, btn_col2 = form.columns([4, 1])
             if btn_col1.form_submit_button('Save'):
                 try:
                     updated_activity = ActivityFormModel(

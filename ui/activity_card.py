@@ -60,7 +60,7 @@ class ActivityCard():
     def render(self):
         df_workouts = self.activity_processor.get_dataframe()
         with st.container(border=True):
-            st.subheader(f'{self.exercise}', divider=True)
+            st.subheader(f'{self.exercise.replace('_', ' ')}', divider=True)
 
             max_total_activity = self.get_max_set_total_activity()
             last_activities = self.get_last_activities(1)
@@ -69,15 +69,14 @@ class ActivityCard():
             ovcol1, ovcol2 = st.columns(2, border=True)
             ovcol1.html(
                 self.render_set_metric(
-                    'Max Set',
-                    max_total_activity
-                )
-            )
-
-            ovcol2.html(
-                self.render_set_metric(
                     'Recent Set',
                     recent_activity
+                )
+            )
+            ovcol2.html(
+                self.render_set_metric(
+                    'Max Set',
+                    max_total_activity
                 )
             )
 
