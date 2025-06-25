@@ -6,6 +6,7 @@ from repository.activity_repository import ActivityRepository
 from ui.activity_card import ActivityCard
 from ui.login_component import LoginComponent
 from ui.new_activity_component import NewActivityComponent
+from ui.recent_activity_component import RecentActivityComponent
 
 
 def init():
@@ -30,6 +31,12 @@ def main():
 
     if st.button('Create Activity'):
         NewActivityComponent(user, activity_repository).render()
+
+    if len(df_workouts):
+        recent_activity = df_workouts.sort_values(
+            'date', ascending=False).head(1).iloc[0]
+        RecentActivityComponent(
+            recent_activity, activity_repository, user).render()
 
     select_exercise_type = st.selectbox(
         'Filter Exercise:', options=[None] + list(ExerciseEnum), format_func=lambda e: e.value if e else '', placeholder="Select exercise")
