@@ -32,8 +32,8 @@ def main():
     if st.button('Create Activity'):
         NewActivityComponent(user, activity_repository).render()
 
-    if len(df_workouts):
-        recent_activity = ActivityProcessor(df_workouts).get_recent_activity()
+    recent_activity = ActivityProcessor(df_workouts).get_recent_activity()
+    if recent_activity is not None:
         RecentActivityComponent(
             recent_activity, activity_repository, user).render()
 

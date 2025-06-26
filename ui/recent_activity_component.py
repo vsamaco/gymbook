@@ -22,7 +22,7 @@ class RecentActivityComponent():
             st.markdown(
                 f'''
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style=''>Recent: {self.activity.exercise.replace('_', ' ')}</h3>
+                    <h3>{self.activity.exercise.replace('_', ' ')}</h3>
                     <div style="padding: 0.75em 0;">{self.activity.date.strftime('%m/%d/%y')}</div>
                 </div>
                 <hr style="margin-top: 0;" />
@@ -46,9 +46,9 @@ class RecentActivityComponent():
             )
             df_sets.rename(index=lambda x: x + 1, inplace=True)
             st.dataframe(df_sets, column_config={
-                "Repetitions": st.column_config.NumberColumn("reps", width="small"),
-                "Weights": st.column_config.TextColumn("weights", width="large"),
-                "Total": st.column_config.NumberColumn("total", width="small"),
+                "Repetitions": st.column_config.NumberColumn("reps"),
+                "Weights": st.column_config.TextColumn("weights", width="small"),
+                "Total": st.column_config.NumberColumn("total"),
             })
 
             if st.button('Edit'):
