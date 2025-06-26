@@ -10,6 +10,12 @@ class ActivityProcessor():
         self.df = self.df[self.df.exercise == exercise]
         return self
 
+    def get_recent_activity(self):
+        filtered_activities = self.df[self.df['exercise'].notna()]
+        if len(filtered_activities):
+            return self.df.loc[filtered_activities['date'].idxmax()]
+        return pd.Series.empty
+
     def get_exercises(self):
         if self.df.empty:
             return []
