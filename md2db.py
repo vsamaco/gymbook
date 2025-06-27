@@ -3,6 +3,9 @@ import datetime as dt
 import streamlit as st
 from st_supabase_connection import SupabaseConnection, execute_query
 import toml
+import pandas as pd
+
+from repository.activity_repository import ActivityRepository
 
 with open('workout_data/config.toml', 'r') as f:
     config = toml.load(f)
@@ -152,5 +155,16 @@ def add_activity(data):
     execute_query(conn.table("activities").insert(activity), ttl=0)
 
 
+existing_workouts = ActivityRepository(conn).get_dataframe(user_id=USER_ID)
+
 for workout in workouts:
-    add_activity(workout)
+
+    matching_workout = existing_workouts[(existing_workouts.date.dt.date ==
+                                         pd.to_datetime(workout['date']).date())]
+    if len(matching_workout):
+        print(
+            f'existing: {matching_workout.iloc[0].id} {matching_workout.iloc[0].exercise}')
+    else:
+        # print(
+        #     f'add new: {pd.to_datetime(workout['date']).date()} {workout['exercise']}')
+        add_activity(workout)

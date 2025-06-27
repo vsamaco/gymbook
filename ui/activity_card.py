@@ -59,6 +59,9 @@ class ActivityCard():
 
     def render(self):
         df_workouts = self.activity_processor.get_dataframe()
+        if df_workouts.empty:
+            return None
+
         with st.container(border=True):
             st.subheader(f'{self.exercise.replace('_', ' ')}', divider=True)
 
