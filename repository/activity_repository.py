@@ -5,21 +5,22 @@ from st_supabase_connection import SupabaseConnection, execute_query
 
 
 class ActivityRepository():
-    def __init__(self, conn: SupabaseConnection):
+    def __init__(self, conn: SupabaseConnection, user_id=None):
         self.db = conn
         self.workout_json = None
+        self.user_id = user_id
 
-    def _get_db_workouts(self, user_id=None):
+    def _get_db_workouts(self):
         query = self.db.table(
             "activities").select("*")
-        if user_id:
-            query = query.eq('user_id', user_id)
+        if self.user_id:
+            query = query.eq('user_id', self.user_id)
         response = execute_query(query, ttl=0)
         return response.data
 
-    def get_dataframe(self, user_id=None):
+    def get_dataframe(self):
         if not self.workout_json:
-            self.workout_json = self._get_db_workouts(user_id)
+            self.workout_json = self._get_db_workouts()
         if not self.workout_json:
             return pd.DataFrame()
 
