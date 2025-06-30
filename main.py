@@ -13,20 +13,21 @@ def init():
     conn = st.connection(
         "supabase", type=SupabaseConnection, ttl=None)
 
-    activity_repository = ActivityRepository(conn)
-    return (conn, activity_repository)
+    user = conn.auth.get_user()
+    if user:
+        user = user.user
+    activity_repository = ActivityRepository(conn, user.id if user else None)
+    return (conn, user, activity_repository)
 
 
 def main():
-    conn, activity_repository = init()
-    user = conn.auth.get_user()
+    conn, user, activity_repository = init()
 
     LoginComponent(conn).render()
     if not user:
         st.stop()
 
-    user = user.user
-    df_workouts = activity_repository.get_dataframe(user.id)
+    df_workouts = activity_repository.get_dataframe()
     st.title('Gymbook')
 
     if st.button('Create Activity'):
