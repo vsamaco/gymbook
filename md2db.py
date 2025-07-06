@@ -157,10 +157,10 @@ if __name__ == "__main__":
     existing_workouts = ActivityRepository(conn, USER_ID).get_dataframe()
 
     for workout in workouts:
-
         matching_workout = existing_workouts[(existing_workouts.date.dt.date ==
-                                              pd.to_datetime(workout['date']).date())].iloc[0]
+                                              pd.to_datetime(workout['date']).date())]
         if not matching_workout.empty:
+            matching_workout = matching_workout.iloc[0]
             print(
                 f'existing: {matching_workout.id} {matching_workout.exercise}')
         else:

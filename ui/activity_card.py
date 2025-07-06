@@ -86,13 +86,19 @@ class ActivityCard():
             with st.expander('Data'):
                 # st.dataframe(df_workouts)
                 df_workouts = df_workouts[[
-                    'id', 'date', 'exercise', 'description', 'sets']]
+                    'id', 'date', 'exercise', 'description', 'sets', 'max_set_reps_total', 'max_set_weights']]
 
                 selected_row = st.dataframe(
                     df_workouts,
                     key=f'data_{self.exercise}',
                     hide_index=True,
-                    column_config={"sets": st.column_config.JsonColumn()},
+                    column_config={
+                        "sets": None,
+                        "date": st.column_config.DatetimeColumn(format='MM-DD-YYYY'),
+                        'exercise': None,
+                        'max_set_reps_total': 'max_set total',
+                        'max_set_weights': 'max_set weights'
+                    },
                     on_select='rerun',
                     selection_mode='single-row',
                 )
