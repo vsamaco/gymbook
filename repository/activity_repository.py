@@ -33,6 +33,10 @@ class ActivityRepository():
             lambda x: x['total'] if isinstance(x, dict) and 'total' in x else None)
         df['max_set_reps'] = df['max_set'].apply(
             lambda x: x['repetitions'] if isinstance(x, dict) and 'total' in x else None)
+        df['max_set_reps_total'] = df['max_set'].apply(
+            lambda x: f"{x['repetitions']}x {x['total']}" if isinstance(x, dict) else None)
+        df['max_set_weights'] = df['max_set'].apply(
+            lambda x: f"{x['weights']}" if isinstance(x, dict) else None)
         df.sort_values('date', inplace=True, ascending=False)
         return df
 
