@@ -15,10 +15,6 @@ class ActivityProcessor():
             return None
         return filtered_activities.sort_values('date', ascending=False).head(1).iloc[0]
 
-    def get_activities_by_exercise(self, exercise, num=1):
-        filtered_activities = self.df[self.df['exercise'] == exercise]
-        return filtered_activities.sort_values('date', ascending=False).head(num)
-
     def get_exercises(self):
         if self.df.empty:
             return []

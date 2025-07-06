@@ -35,8 +35,9 @@ def main():
 
     recent_activity = ActivityProcessor(df_workouts).get_recent_activity()
     if recent_activity is not None:
-        previous_activity = ActivityProcessor(
-            df_workouts).get_activities_by_exercise(recent_activity['exercise'], 2).iloc[-1]
+        filtered_activities = ActivityProcessor(
+            df_workouts).filter_by_exercise(recent_activity['exercise']).get_dataframe()
+        previous_activity = filtered_activities.head(2).iloc[-1]
         RecentActivityComponent(
             recent_activity, previous_activity, activity_repository, user).render()
 
