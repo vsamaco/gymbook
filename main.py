@@ -35,8 +35,10 @@ def main():
 
     recent_activity = ActivityProcessor(df_workouts).get_recent_activity()
     if recent_activity is not None:
+        previous_activity = ActivityProcessor(
+            df_workouts).get_activities_by_exercise(recent_activity['exercise'], 2).iloc[-1]
         RecentActivityComponent(
-            recent_activity, activity_repository, user).render()
+            recent_activity, previous_activity, activity_repository, user).render()
 
     select_exercise_type = st.selectbox(
         'Filter Exercise:', options=[None] + list(ExerciseEnum), format_func=lambda e: e.value if e else '', placeholder="Select exercise")

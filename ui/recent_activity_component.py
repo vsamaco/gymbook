@@ -6,14 +6,15 @@ from ui.update_activity_component import UpdateActivityComponent
 
 
 class RecentActivityComponent():
-    def __init__(self, activity: pd.Series, activity_repository: ActivityRepository, user):
-        self.activity = activity
+    def __init__(self, recent_activity: pd.Series, previous_activity: pd.Series, activity_repository: ActivityRepository, user):
+        self.recent_activity = recent_activity
+        self.previous_activity = previous_activity
         self.activity_repository = activity_repository
         self.user = user
 
-    def get_sets_volume(self):
+    def get_sets_volume(self, activity_sets):
         volume = 0
-        for single_set in self.activity.sets:
+        for single_set in activity_sets:
             volume += single_set['total']
         return volume
 
@@ -22,26 +23,38 @@ class RecentActivityComponent():
             st.markdown(
                 f'''
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3>{self.activity.exercise.replace('_', ' ')}</h3>
-                    <div style="padding: 0.75em 0;">{self.activity.date.strftime('%m/%d/%y')}</div>
+                    <h3>{self.recent_activity.exercise.replace('_', ' ')}</h3>
+                    <div style="padding: 0.75em 0;">{self.recent_activity.date.strftime('%m/%d/%y')}</div>
                 </div>
                 <hr style="margin-top: 0;" />
                 ''',
                 unsafe_allow_html=True,
             )
-            st.write(self.activity.description)
+            st.write(self.recent_activity.description)
+            delta_max_set_total = ((
+                self.recent_activity['max_set_total'] - self.previous_activity['max_set_total']) / self.previous_activity['max_set_total']) * 100
+            previous_max_set_date = self.previous_activity['date'].strftime(
+                '%m-%d')
+
+            recent_activity_volume = self.get_sets_volume(
+                self.recent_activity['sets'])
+            previous_activity_volume = self.get_sets_volume(
+                self.previous_activity['sets'])
+            delta_volume = ((recent_activity_volume -
+                            previous_activity_volume) / previous_activity_volume) * 100
 
             c3, c4, c5 = st.columns(3, border=True)
-            c3.metric('Num Sets', len(self.activity.sets))
+            c3.metric('Num Sets', len(self.recent_activity.sets))
             c4.metric(
-                'Max Set', f"{self.activity.max_set_reps}x {self.activity.max_set_total}")
-            c5.metric('Total Volume', self.get_sets_volume())
+                'Max Set', f"{self.recent_activity.max_set_reps}x {self.recent_activity.max_set_total}", f"{delta_max_set_total:.1f}% since {previous_max_set_date}")
+            c5.metric('Total Volume', self.get_sets_volume(
+                self.recent_activity['sets']), delta=f"{delta_volume:.1f}% since {previous_max_set_date}")
 
             df_sets = pd.DataFrame(
                 {
-                    'Repetitions': [s['repetitions'] for s in self.activity.sets],
-                    'Weights': [s['weights'] for s in self.activity.sets],
-                    'Total': [round(s['total']) for s in self.activity.sets],
+                    'Repetitions': [s['repetitions'] for s in self.recent_activity.sets],
+                    'Total': [round(s['total']) for s in self.recent_activity.sets],
+                    'Weights': [s['weights'] for s in self.recent_activity.sets],
                 }
             )
             df_sets.rename(index=lambda x: x + 1, inplace=True)
@@ -53,4 +66,4 @@ class RecentActivityComponent():
 
             if st.button('Edit'):
                 UpdateActivityComponent(
-                    self.activity, self.user, self.activity_repository).render()
+                    self.recent_activity, self.user, self.activity_repository).render()
