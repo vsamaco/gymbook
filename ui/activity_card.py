@@ -102,7 +102,7 @@ class ActivityCard():
                     on_select='rerun',
                     selection_mode='single-row',
                 )
-                if selected_row['selection']['rows']:
+                if self.user and selected_row['selection']['rows']:
                     selected_indices = selected_row['selection']['rows']
                     selected_data = df_workouts.iloc[selected_indices]
                     if not selected_data.empty:

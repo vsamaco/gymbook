@@ -64,6 +64,6 @@ class RecentActivityComponent():
                 "Total": st.column_config.NumberColumn("total"),
             })
 
-            if st.button('Edit'):
+            if self.user and st.button('Edit'):
                 UpdateActivityComponent(
                     self.recent_activity, self.user, self.activity_repository).render()

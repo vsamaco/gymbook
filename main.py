@@ -23,14 +23,15 @@ def init():
 def main():
     conn, user, activity_repository = init()
 
-    LoginComponent(conn).render()
-    if not user:
-        st.stop()
+    col1, col2 = st.columns([5, 1], vertical_alignment='bottom')
+    with col2:
+        LoginComponent(conn).render()
 
     df_workouts = activity_repository.get_dataframe()
-    st.title('Gymbook')
+    with col1:
+        st.title('Gymbook')
 
-    if st.button('Create Activity'):
+    if user and st.button('Create Activity'):
         NewActivityComponent(user, activity_repository).render()
 
     recent_activity = ActivityProcessor(df_workouts).get_recent_activity()
