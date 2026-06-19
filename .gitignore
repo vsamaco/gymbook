@@ -172,3 +172,4 @@ workout_data/config.toml
 workout_data/workouts.json
 workout_data/workouts.md
 supabase/seed.sql
+exported_notes/
