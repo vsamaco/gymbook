@@ -10,6 +10,7 @@ class DummyCompletedProcess:
 
 def test_clean_html_to_markdown_converts_html_to_markdown():
     html = (
+        '<div><h1>P13</h1></div>'
         '<div><h2>Lower Strength</h2></div>'
         '<div><b>Bench press 10/8/5</b></div>'
         '<div>10: 45</div>'
@@ -19,7 +20,7 @@ def test_clean_html_to_markdown_converts_html_to_markdown():
     )
     markdown = clean_html_to_markdown(html, "P13")
 
-    assert markdown.startswith("# P13")
+    assert markdown.startswith("*P13")
     assert "**Lower Strength**" in markdown
     assert "Bench press 10/8/5" in markdown
     assert "10: 45" in markdown

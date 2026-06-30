@@ -54,10 +54,6 @@ def clean_html_to_markdown(html_content: str, title: str) -> str:
     # clean double line breaks
     cleaned_body = re.sub(r"\n{3,}", "\n\n", text).strip()
 
-    # inject file name if title not present
-    if not cleaned_body.startswith("# "):
-        return f"# {title}\n\n{cleaned_body}"
-
     return cleaned_body
 
 
