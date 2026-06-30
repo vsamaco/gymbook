@@ -6,15 +6,15 @@ from models.notes_model import WorkoutRaw, Workout
 class NoteProcessor:
     HEADING_REGEX = r'^\*\*(\d+)/(\d+)(.*)\*\*'
 
-    @classmethod
-    def from_md_workouts(cls, md_text, current_year):
+    def from_md_workouts(self, md_text, current_year):
+        print("process from md workouts")
         raw_workouts: list[WorkoutRaw] = []
         skip_top = True
 
         for line in md_text[1:]:
             if line.strip() == '':
                 continue
-            match = re.match(cls.HEADING_REGEX, line)
+            match = re.match(self.HEADING_REGEX, line)
 
             if match:
                 skip_top = False
