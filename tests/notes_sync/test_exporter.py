@@ -1,4 +1,3 @@
-from pathlib import Path
 import pytest
 
 from notes_sync.exporter import clean_html_to_markdown, export_note_by_title
