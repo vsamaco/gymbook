@@ -4,7 +4,7 @@ import toml
 import streamlit as st
 from st_supabase_connection import SupabaseConnection
 
-with open('workout_data/config.toml', 'r') as f:
+with open('config/notes_sync.toml', 'r') as f:
     config = toml.load(f)
 USERNAME = config['IMPORT_USERNAME']
 PASSWORD = config['IMPORT_PASSWORD']
@@ -47,6 +47,7 @@ for line in md_text[1:]:
 
         workouts.append({
             'date': f"{match.group(1)}/{match.group(2)}/{year}",
+            'title': str(match.group(3)).strip(),
             'description': [],
             'strength': '',
             'strength_description': '',

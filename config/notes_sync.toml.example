@@ -1,0 +1,3 @@
+IMPORT_USERNAME = ''
+IMPORT_PASSWORD = ''
+EXPORT_NOTE_PATH = 'exported_notes'
