@@ -11,7 +11,7 @@
 
 1. Install dependencies:
    `pip install -r requirements.txt`
-2. Copy ./streamlit/secrets.toml.example to `secrets.toml`
+2. Copy ./streamlit/secrets.toml.example to `./streamlit/secrets.toml`
 3. For local postgres, install [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
    - Run `supabase start` to start supabase containers, which run db migration and db seed on first run.
    - Run `supabase status` and update `secrets.toml` with `SUPABASE_URL=API URL`
@@ -23,7 +23,7 @@
 ## Data Import
 
 1. Create an import user in Supabase / Authentication with username and password and auto confirm user
-2. Copy `workout_data/config.toml.example` to `config/notes_sync.toml` and set the values:
+2. Copy `config/notes_sync.toml.example` to `config/notes_sync.toml` and set the values:
 
 - IMPORT_USERNAME # import user username
 - IMPORT_PASSWORD # import user password
