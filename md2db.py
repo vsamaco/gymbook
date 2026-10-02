@@ -15,7 +15,7 @@ if __name__ == "__main__":
         IMPORT_ACTIVITIES = True
     print(f"IMPORT={IMPORT_ACTIVITIES}")
 
-    with open('workout_data/config.toml', 'r') as f:
+    with open('config/notes_sync.toml', 'r') as f:
         config = toml.load(f)
     USERNAME = config['IMPORT_USERNAME']
     PASSWORD = config['IMPORT_PASSWORD']

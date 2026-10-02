@@ -1,11 +1,11 @@
 import datetime as dt
 import re
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class WorkoutRaw(BaseModel):
     date: dt.datetime
-    description_raw: list[str] = []
+    description_raw: list[str] = Field(default_factory=list)
 
 
 class WorkoutSet(BaseModel):

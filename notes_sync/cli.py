@@ -1,3 +1,4 @@
+import logging
 import sys
 import argparse
 
@@ -5,6 +6,11 @@ from processors.note_processor import NoteProcessor
 from .auth import SupabaseSession
 from .loader import NoteLoader
 from .syncer import WorkoutSyncer
+
+logging.basicConfig(
+        level=logging.INFO,
+        format="%(name)s: %(message)s",
+    )
 
 
 def main(argv=None):
@@ -22,20 +28,26 @@ def main(argv=None):
     NOTE_TO_FIND = args.note
     IMPORT_ACTIVITIES = args.do_import
 
-    session = SupabaseSession("workout_data/config.toml")
-    session.connect()
+    session = SupabaseSession("config/notes_sync.toml")
+    try:
+        session.connect()
+    except:
+        raise Exception('Failed session connect')
 
     syncer = WorkoutSyncer(session.conn, session.user_id)
-    loader = NoteLoader("workout_data/config.toml")
+    loader = NoteLoader("config/notes_sync.toml")
     processor = NoteProcessor()
 
-    gym_notes = loader.load_note_markdown(NOTE_TO_FIND)
+    try:
+        gym_notes = loader.load_note_markdown(NOTE_TO_FIND)
+    except:
+        raise Exception('Note loader error')
     gym_activities = processor.from_md_workouts(gym_notes, 2022)
     existing_activities = syncer.get_db_workouts()
 
     new_activities = syncer.find_new_activities(
         existing_activities, gym_activities)
-    print("total new:", len(new_activities))
+    logging.info(f"total new: {len(new_activities)}")
 
     if IMPORT_ACTIVITIES:
         syncer.save_activities(new_activities)

@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 from st_supabase_connection import execute_query
 from repository.activity_repository import ActivityRepository
@@ -24,11 +26,11 @@ class WorkoutSyncer:
                                                     pd.to_datetime(workout.date).date())]
             if not matching_workout.empty:
                 matching_workout = matching_workout.iloc[0]
-                print(
+                logging.info(
                     f'existing: {matching_workout.id} {matching_workout.exercise}')
             else:
                 new_activities.append(workout)
-                print(
+                logging.info(
                     f'add new: {pd.to_datetime(workout.date).date()} {workout.exercise}')
 
         return new_activities

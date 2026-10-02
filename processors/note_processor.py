@@ -7,7 +7,6 @@ class NoteProcessor:
     HEADING_REGEX = r'^\*\*(\d+)/(\d+)(.*)\*\*'
 
     def from_md_workouts(self, md_text, current_year):
-        print("process from md workouts")
         raw_workouts: list[WorkoutRaw] = []
         skip_top = True
 

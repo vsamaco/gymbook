@@ -23,7 +23,7 @@
 ## Data Import
 
 1. Create an import user in Supabase / Authentication with username and password and auto confirm user
-2. Copy `workout_data/config.example.toml` to `config.toml` and setup env variables:
+2. Copy `workout_data/config.toml.example` to `config/notes_sync.toml` and set the values:
 
 - IMPORT_USERNAME # import user username
 - IMPORT_PASSWORD # import user password

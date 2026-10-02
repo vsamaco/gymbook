@@ -4,7 +4,7 @@ from st_supabase_connection import SupabaseConnection
 
 
 class SupabaseSession:
-    def __init__(self, config_path="workout_data/config.toml"):
+    def __init__(self, config_path="config/notes_sync.toml"):
         self.config_path = config_path
         self.conn = None
         self.user_id = None
@@ -12,6 +12,12 @@ class SupabaseSession:
     def load_credentials(self):
         with open(self.config_path, "r") as f:
             config = toml.load(f)
+        if not config['IMPORT_USERNAME']:
+            raise Exception('Import user not found')
+
+        if not config['IMPORT_PASSWORD']:
+            raise Exception('Import password not found')
+
         return config["IMPORT_USERNAME"], config["IMPORT_PASSWORD"]
 
     def connect(self):
