@@ -49,3 +49,10 @@ python notes_sync.py
 python notes_sync.py --import
 
 ```
+
+## Tests
+
+1. Run pytests with python
+```
+python -m pytest
+```
